@@ -1,0 +1,6 @@
+# profile-title: VPN by freshfork #2
+# profile-update-interval: 1
+# Date/Time: 2026-06-04
+# Количество: 1
+
+vless://0d691047-4b32-7a81-9d9f-123456789012@example.com:443?path=%2F&security=tls&encryption=none&type=ws&host=example.com#in%20dev...
