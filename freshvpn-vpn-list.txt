@@ -1,9 +1,8 @@
 # profile-title: VPN by freshfork #1
 # profile-update-interval: 1
 # profile-web-page-url: https://t.me/fresh1VPN
-# subscription-userinfo: upload=11000000000; download=54000000000; total=644245094400
-# Спасибо за использование freshVPN!;
-# Получить другие авторские конфигурации бесплатно - t.me/fresh1VPN;
+# subscription-userinfo: upload=10000000000; download=50000000000; total=644245094400
+# profile-notice: Спасибо за использование freshVPN!;\nПолучить другие авторские конфигурации бесплатно - t.me/fresh1VPN;
 
 vless://f099abc1-eb01-4171-a94f-566563f6b3b1@87.120.196.18:443?security=reality&encryption=none&echfq=none&pbk=o2SrzDoX5tfMpju7B-RSxsb7eo6-hdV1vRFP8VA-dUA&headerType=none&fp=chrome&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=www.ya.ru#%F0%9F%87%A7%F0%9F%87%AC%20Bulgaria%2C%20Sofia%20%7C%20%5BBL%5D
 vless://fb7fe921-1032-45fe-ae9d-20090976e572@tal.odavpn.online:443?fp=chrome&host=www.amd.com&mode=packet-up&path=%2Fapi%2Fv1%2Fupdate&pbk=_5YItXYM7SPX7baBG4Fl1MDBE7UvDC8sOx8-0VVueBA&security=reality&sid=41774dc9dc721e&sni=www.amd.com&type=xhttp#%F0%9F%87%AA%F0%9F%87%AA%20Estonia%2C%20Tallinn%20%7C%20%F0%9F%8C%90%20%7C%20%5BBL%5D
