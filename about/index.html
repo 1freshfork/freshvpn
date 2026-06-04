@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshVPN - About Project</title>
+    <link rel="icon" type="image/png" href="../files/logo.png">
+    <style>
+        /* === ПЕРЕМЕННЫЕ И КАСТОМНАЯ ПАЛИТРА === */
+        :root {
+            --bg-dark: #080b10;
+            --bg-card: #111622;
+            --bg-card-hover: #171e2e;
+            --accent: #00ff88; /* Fresh Mint */
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --text-main: #f0f5ff;
+            --text-muted: #8595ae;
+            --border-color: #1e293b;
+            --border-hover: #334155;
+            --font-tech: 'Courier New', Courier, monospace;
+        }
+
+        /* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* === НАВИГАЦИЯ (NAVBAR) === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(8, 11, 16, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .navbar .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .navbar .links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .navbar .links a:empty {
+            display: none;
+        }
+
+        /* === ХЕДЕР СТРАНИЦЫ === */
+        .about-header {
+            max-width: 1200px;
+            margin: 40px auto 20px auto;
+            padding: 0 20px;
+        }
+
+        .about-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .about-header .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* === ГЛАВНЫЙ МАНИФЕСТ О ПРОЕКТЕ === */
+        .manifesto-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .manifesto-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .manifesto-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .manifesto-card p {
+            color: var(--text-main);
+            font-size: 1.15rem;
+            line-height: 1.7;
+            max-width: 1000px;
+        }
+
+        /* === СХЕМА СТРУКТУРЫ (HOW IT WORKS) === */
+        .architecture-title {
+            max-width: 1200px;
+            margin: 60px auto 24px auto;
+            padding: 0 20px;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+        }
+
+        .architecture-flow {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .flow-step {
+            background: rgba(17, 22, 34, 0.6);
+            border: 1px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .flow-step .step-num {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .flow-step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .flow-step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* === БЛОК ЛЕГАЛЬНОСТИ И РЕПОЗИТОРИЕВ === */
+        .legality-grid {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .legality-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 20px 20px 0;
+            padding: 32px;
+        }
+
+        .legality-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .legality-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        /* Карточка разработчика в стиле терминала */
+        .dev-terminal {
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            font-family: var(--font-tech);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff5f56;
+        }
+        .terminal-dot:nth-child(2) { background: #ffbd2e; }
+        .terminal-dot:nth-child(3) { background: #27c93f; }
+
+        .terminal-body {
+            font-size: 0.9rem;
+            color: #c9d1d9;
+            margin-bottom: 24px;
+        }
+
+        .terminal-body .green { color: var(--accent); }
+        .terminal-body .blue { color: #58a6ff; }
+
+        .dev-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .dev-link:hover {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* === ФУТЕР === */
+        .footer {
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 40px 20px 0 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 968px) {
+            .architecture-flow { grid-template-columns: 1fr; }
+            .legality-grid { grid-template-columns: 1fr; }
+            .manifesto-card { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <h1>FreshVPN</h1>
+        </div>
+        <div class="links">
+            <a href="../">Home</a>
+            <a href="../servers/">Servers</a>
+            <a href="../about/">About</a>
+            <a href="../connect/">Connect</a>
+        </div>
+    </div>
+
+    <div class="about-header">
+        <h1>About project</h1>
+        <p class="subtitle">System specifications, core principles, and architectural mechanics behind FreshVPN.</p>
+    </div>
+
+    <div class="manifesto-section">
+        <div class="manifesto-card">
+            <h2>The Core Mission</h2>
+            <p>
+                FreshVPN - A free VPN that uses paid Telegram bot servers that sell VPN configs for happ. 
+                The author does all of this legally. He uses legitimate programs for hacking happ keys, 
+                which are located in GitHub repositories.
+            </p>
+        </div>
+    </div>
+
+    <h2 class="architecture-title">Data Transmission Pipeline</h2>
+    <div class="architecture-flow">
+        <div class="flow-step">
+            <span class="step-num">01 / Source</span>
+            <h3>Telegram Bot Nodes</h3>
+            <p>Clusters of high-tier paid infrastructure configurations are indexed and processed directly from integrated bot frameworks.</p>
+        </div>
+        <div class="flow-step">
+            <span class="step-num">02 / Processing</span>
+            <h3>Key Extraction</h3>
+            <p>Legitimate cryptographic scripts parsed from open GitHub tools decrypt and extract working keys seamlessly.</p>
+        </div>
+        <div class="flow-step">
+            <span class="step-num">03 / Target</span>
+            <h3>happ Client Injection</h3>
+            <p>The resulting endpoint links and custom QR matrices are generated to immediately sync with your proxy client interface.</p>
+        </div>
+    </div>
+
+    <div class="legality-grid">
+        <div class="legality-card">
+            <h3>Legality & Transparency Statement</h3>
+            <p>
+                Security by transparency. FreshVPN heavily relies on completely legitimate and public utilities. 
+                All parsing routines, compilation sequences, and script components utilized to aggregate the configurations 
+                derive from open-source GitHub ecosystems available for public inspection.
+            </p>
+            <p>
+                No proprietary bypasses are built behind closed doors. The infrastructure leverages existing networking protocols 
+                to maintain continuous uptime without violation of digital agreements.
+            </p>
+        </div>
+
+        <div class="dev-terminal">
+            <div>
+                <div class="terminal-header">
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                </div>
+                <div class="terminal-body">
+                    <p><span class="green">$</span> cat dev_info.json</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;<span class="blue">"author"</span>: "@freshfork",</p>
+                    <p>&nbsp;&nbsp;<span class="blue">"license"</span>: "OpenSource",</p>
+                    <p>&nbsp;&nbsp;<span class="blue">"status"</span>: "Active"</p>
+                    <p>}</p>
+                </div>
+            </div>
+            <a href="https://github.com/1freshfork/" class="dev-link" target="_blank">Open GitHub Profile</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>2026, freshVPN.</p>
+        <p>&#x2764; by <a href="https://github.com/1freshfork/">@freshfork</a></p>
+    </div>
+
+</body>
+</html>
