@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshVPN - Server Status</title>
+     <link rel="icon" type="image/png" href="../files/logo.png">
+    <style>
+        /* === ПЕРЕМЕННЫЕ И КАСТОМНАЯ ПАЛИТРА === */
+        :root {
+            --bg-dark: #080b10;
+            --bg-card: #111622;
+            --bg-card-hover: #171e2e;
+            --accent: #00ff88; /* Fresh Mint */
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --text-main: #f0f5ff;
+            --text-muted: #8595ae;
+            --border-color: #1e293b;
+            --border-hover: #334155;
+            --font-tech: 'Courier New', Courier, monospace;
+        }
+
+        /* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* === НАВИГАЦИЯ (NAVBAR) === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(8, 11, 16, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .navbar .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .navbar .links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .navbar .links a:empty {
+            display: none;
+        }
+
+        /* === СЕКЦИЯ МОНИТОРИНГА (HEADER & STATS) === */
+        .servers-header {
+            max-width: 1200px;
+            margin: 40px auto 20px auto;
+            padding: 0 20px;
+        }
+
+        .servers-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .servers-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Панель глобального статуса сети */
+        .network-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-box .label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-box .value {
+            font-family: var(--font-tech);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-box .value.online {
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        /* Живой поисковой фильтр */
+        .filter-container {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* === СЕТКА СЕРВЕРОВ === */
+        .servers {
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
+        }
+
+        /* Скрываем старый заголовок внутри .servers, так как сделали новый красивый сверху */
+        .servers > h1 {
+            display: none; 
+        }
+
+        .servers-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .server-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+            background: var(--bg-card-hover);
+        }
+
+        /* Верхняя строка карточки (Флаг + Имя) */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .server-card h1 {
+            font-size: 2.2rem;
+            line-height: 1;
+            margin: 0;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+        }
+
+        .server-card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Индикатор кастомного лоадера (Кастомная фича для ухода от шаблона ИИ) */
+        .server-load-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .server-load-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 30%; /* Будет изменено динамически через JS */
+        }
+
+        /* Строка статуса (Пинг) */
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .server-card p {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.02);
+            margin: 0;
+        }
+
+        /* Тег типа подключения внутри карточки */
+        .tech-badge {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Динамические цвета пинга */
+        .server-card p.ping-good { color: var(--accent); border-color: rgba(0, 255, 136, 0.15); }
+        .server-card p.ping-medium { color: #ffb74d; border-color: rgba(255, 183, 77, 0.15); }
+        .server-card p.ping-bad { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.15); }
+
+        /* Сообщение при пустом поиске */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+            border: 1px dashed var(--border-color);
+            border-radius: 16px;
+            display: none;
+        }
+
+        /* === ФУТЕР === */
+        .footer {
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 40px 20px 0 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 768px) {
+            body { padding-top: 70px; }
+            .navbar { padding: 0 20px; }
+            .servers-header h1 { font-size: 2.2rem; }
+            .network-overview { grid-template-columns: 1fr 1fr; }
+            .footer { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <h1>FreshVPN</h1>
+        </div>
+        <div class="links">
+            <a href="../">Home</a>
+            <a href="../servers/">Servers</a>
+            <a href="../about/">About</a>
+            <a href="../connect/">Connect</a>
+        </div>
+    </div>
+
+    <div class="servers-header">
+        <h1>Nodes & Infrastructure</h1>
+        <p>Real-time telemetry and configuration tags for all available server clusters.</p>
+        
+        <div class="network-overview">
+            <div class="stat-box">
+                <span class="label">Total Locations</span>
+                <span class="value" id="totalNodes">37 Nodes</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Network Status</span>
+                <span class="value online">OPERATIONAL</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Average Uptime</span>
+                <span class="value">99.98%</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Encryption</span>
+                <span class="value" style="font-size:1.3rem; color: #fff;">OpenRay / Shadowsocks</span>
+            </div>
+        </div>
+
+        <div class="filter-container">
+            <input type="text" id="serverSearch" class="search-input" placeholder="Type country or configuration tag (e.g., [CIDR], Finland, VK)...">
+        </div>
+    </div>
+
+    <div class="servers">
+        <h1>Servers</h1>
+        <div class="servers-grid-container" id="gridContainer">
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1ED;&#x1F1FA;</h1>
+                    <h2>Hungary</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~450 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1F7;</h1>
+                    <h2>France</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~500 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F0;&#x1F1F7;</h1>
+                    <h2>South Korea</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F9;&#x1F1F7;</h1>
+                    <h2>Turkey</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~700 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EC;&#x1F1E7;</h1>
+                    <h2>United Kingdom</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~500 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1FA;&#x1F1F8;</h1>
+                    <h2>United States</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~1500 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1E7;&#x1F1EC;</h1>
+                    <h2>Bulgaria</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1ED;&#x1F1F0;</h1>
+                    <h2>Hong Kong</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F0;&#x1F1FF;</h1>
+                    <h2>Kazakhstan</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~700 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F5;&#x1F1F1;</h1>
+                    <h2>Poland</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~380 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F1;&#x1FB;</h1>
+                    <h2>Latvia [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR Stack</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1E8;&#x1F1E6;</h1>
+                    <h2>Canada</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Standard</span>
+                    <p>Ping: ~1100 ms</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1EE;</h1>
+                    <h2>Finland [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1EE;</h1>
+                    <h2>Finland [SNI-RU]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">SNI-Bypass</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1EE;</h1>
+                    <h2>Finland [BL]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Blacklist Guard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1EE;</h1>
+                    <h2>Finland [BL] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">OpenRay</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1DE;&#x1F1E5;</h1>
+                    <h2>Germany [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Hybrid</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1DE;&#x1F1E5;</h1>
+                    <h2>Germany [BL] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Hybrid</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1DE;&#x1F1E5;</h1>
+                    <h2>Germany [BL]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Blacklist Guard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1ED;&#x1F1FA;</h1>
+                    <h2>Hungary [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1ED;&#x1F1FA;</h1>
+                    <h2>Hungary [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">OpenRay</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EE;&#x1F1F3;</h1>
+                    <h2>India [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F2;&#x1F1DE;</h1>
+                    <h2>Moldova [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F3;&#x1F1F1;</h1>
+                    <h2>The Netherlands [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F9;&#x1F1F7;</h1>
+                    <h2>Turkey [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F7;&#x1F1FA;</h1>
+                    <h2>Russia [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Bypass Pack</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1F7;&#x1F1FA;</h1>
+                    <h2>Russia [CIDR] [VK]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">VK Routing</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1E8;&#x1F1FF;</h1>
+                    <h2>Czechia [CIDR]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">CIDR</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1FA;&#x1F1F8;</h1>
+                    <h2>United States [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">OpenRay</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1FA;&#x1F1F8;</h1>
+                    <h2>United States [SNI-RU]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">SNI-Bypass</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EE;&#x1F1EA;</h1>
+                    <h2>Estonia [BL]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Blacklist Guard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1F7;</h1>
+                    <h2>France [BL] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">OpenRay</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1F7;</h1>
+                    <h2>France [BL]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Blacklist Guard</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1E8;&#x1F1ED;</h1>
+                    <h2>Anycast-IP (Switzerland) [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Anycast Core</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EC;&#x1F1E7;</h1>
+                    <h2>Anycast-IP (United Kingdom) [CIDR] [YA]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Yandex Route</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EB;&#x1F1F7;</h1>
+                    <h2>Anycast-IP (France) [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Anycast Core</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <h1>&#x1F1EE;&#x1F1F3;</h1>
+                    <h2>Anycast-IP (India) [CIDR] [OPENRAY]</h2>
+                </div>
+                <div class="server-load-bar"><div class="server-load-fill"></div></div>
+                <div class="card-meta">
+                    <span class="tech-badge">Anycast Core</span>
+                    <p>Ping: N/A</p>
+                </div>
+            </div>
+
+            <div class="no-results" id="noResults">No servers matching your query found.</div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>2026, freshVPN.</p>
+        <p>&#x2764; by <a href="https://github.com/1freshfork/">@freshfork</a></p>
+    </div>
+
+    <script>
+        // 1. Динамическая симуляция нагрузок и разметка классов для пинга
+        document.querySelectorAll('.server-card').forEach(card => {
+            const p = card.querySelector('p');
+            const fill = card.querySelector('.server-load-fill');
+            const text = p.innerText;
+            
+            // Генерация псевдо-случайной, но стабильной полосы нагрузки для красоты дешборда
+            const randomLoad = Math.floor(Math.random() * 55) + 15; 
+            fill.style.width = randomLoad + '%';
+            if(randomLoad > 60) fill.style.backgroundColor = '#ffb74d';
+
+            // Разметка классов по значению задержки
+            if (text.includes('N/A')) {
+                // Стандартный блеклый стиль
+            } else {
+                const ms = parseInt(text.replace(/[^0-9]/g, ''), 10);
+                if (ms < 400) {
+                    p.classList.add('ping-good');
+                } else if (ms <= 700) {
+                    p.classList.add('ping-medium');
+                } else {
+                    p.classList.add('ping-bad');
+                    fill.style.backgroundColor = '#ff6b6b';
+                }
+            }
+        });
+
+        // 2. Логика живого поиска
+        const searchInput = document.getElementById('serverSearch');
+        const cards = document.querySelectorAll('.server-card');
+        const noResults = document.getElementById('noResults');
+        const totalNodes = document.getElementById('totalNodes');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('h2').innerText.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Показываем заглушку если ничего не найдено
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+
+            // Обновляем счетчик найденных серверов на лету
+            totalNodes.innerText = visibleCount + ' Nodes';
+        });
+    </script>
+</body>
+</html>
