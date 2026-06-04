@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello to FreshVPN!</title>
+    <link rel="icon" type="image/png" href="files/logo.png">
+    <style>
+        /* === ПЕРЕМЕННЫЕ И КАСТОМНАЯ ПАЛИТРА === */
+        :root {
+            --bg-dark: #080b10;
+            --bg-card: #111622;
+            --bg-card-hover: #171e2e;
+            --accent: #00ff88; /* Fresh Mint */
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --text-main: #f0f5ff;
+            --text-muted: #8595ae;
+            --border-color: #1e293b;
+            --border-hover: #334155;
+            --font-tech: 'Courier New', Courier, monospace;
+        }
+
+        /* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* === НАВИГАЦИЯ (NAVBAR) === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(8, 11, 16, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .navbar .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .navbar .links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Стилизация пустой ссылки из исходного кода, чтобы не ломать верстку */
+        .navbar .links a:empty {
+            display: none;
+        }
+
+        /* === БАННЕР (HERO SECTION) === */
+        .banner {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 60px 40px;
+            position: relative;
+            background: radial-gradient(circle at 80% 50%, rgba(0, 255, 136, 0.08), transparent 45%), var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .banner h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -1.5px;
+        }
+
+        .banner p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 32px;
+            z-index: 2;
+        }
+
+        .banner p a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent);
+            padding-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        .banner p a:hover {
+            background: var(--accent-glow);
+            border-bottom-style: solid;
+        }
+
+        .banner img {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            max-width: 400px;
+            height: auto;
+            object-fit: contain;
+            pointer-events: none;
+            opacity: 0.8;
+            z-index: 1;
+            filter: drop-shadow(0 0 30px rgba(0,255,136,0.1));
+        }
+
+        .banner a button {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 2;
+        }
+
+        .banner a button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+        }
+
+        /* === О ПРОЕКТЕ (ABOUT) === */
+        .about-cratco {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--bg-card);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 16px 16px 0;
+        }
+
+        .about-cratco h1 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .about-cratco p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 900px;
+        }
+
+        /* === ПОДКЛЮЧЕНИЕ / КОНФИГУРАЦИИ === */
+        .connect {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .connect > h1 {
+            font-size: 2.2rem;
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+            position: relative;
+        }
+
+        .connect-1, .connect-2, .connect-3 {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: border-color 0.3s;
+        }
+
+        .connect-1:hover, .connect-2:hover, .connect-3:hover {
+            border-color: var(--border-hover);
+        }
+
+        .connect h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .connect p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            max-width: 800px;
+        }
+
+        /* Предупреждение для тяжелого пака */
+        .connect-1 p {
+            color: #ffb74d;
+            background: rgba(255, 183, 77, 0.06);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 3px solid #ffb74d;
+        }
+
+        .connect button {
+            background: transparent;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 12px;
+            transition: all 0.2s;
+        }
+
+        .connect button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #fff;
+        }
+
+        .connect button:nth-of-type(1) {
+            border-color: rgba(0, 255, 136, 0.3);
+            color: var(--accent);
+        }
+
+        .connect button:nth-of-type(1):hover {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        /* === СЕРВЕРЫ === */
+        .servers {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .servers > h1 {
+            font-size: 2.2rem;
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+        }
+
+        /* Сетка карточек серверов */
+        .servers-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .server-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .server-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            background: var(--bg-card-hover);
+        }
+
+        .server-card h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            line-height: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+        }
+
+        .server-card h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .server-card p {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        /* Динамический окрас пинга на основе текста через JS класс */
+        .server-card p.ping-good { color: var(--accent); }
+        .server-card p.ping-medium { color: #ffb74d; }
+        .server-card p.ping-bad { color: #ff6b6b; }
+
+        /* === ФУТЕР === */
+        .footer {
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 40px 20px 0 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО ДЛЯ QR КОДОВ === */
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 7, 10, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+        }
+
+        .qr-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .qr-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-hover);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .qr-modal.active .qr-modal-content {
+            transform: scale(1);
+        }
+
+        .qr-modal-content img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 12px;
+            margin: 16px 0;
+            background: white;
+            padding: 10px;
+        }
+
+        .qr-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .qr-modal-close:hover {
+            color: #fff;
+        }
+
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 968px) {
+            body { padding-top: 70px; }
+            .navbar { padding: 0 20px; }
+            .banner { margin: 20px; padding: 40px; radial-gradient(circle at 50% 100%, rgba(0, 255, 136, 0.08), transparent 45%), var(--bg-card); }
+            .banner h1 { font-size: 2.5rem; }
+            .banner img { display: none; }
+            .about-cratco { margin: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <h1>FreshVPN</h1>
+        </div>
+        <div class="links">
+            <a href="#">Home</a>
+            <a href="servers/">Servers</a>
+            <a href="about/">About</a>
+            <a href="connect/">Connect</a>
+        </div>
+    </div>
+
+    <div class="banner">
+        <h1>Hello to FreshVPN!</h1>
+        <p>Absolutely free VPN from the developer <a href="https://github.com/1freshfork/">@freshfork</a>.</p>
+        <a href="#connect"><button>connect</button></a>
+    </div>
+
+    <div class="about-cratco">
+        <h1>About project</h1>
+        <p>FreshVPN - A free VPN that uses paid Telegram bot servers that sell VPN configs for happ. The author does all of this legally. He uses legitimate programs for hacking happ keys, which are located in GitHub repositories.</p>
+    </div>
+
+    <div id="connect" class="connect">
+        <h1>Add configuration on happ</h1>
+        
+        <div class="connect-1">
+            <h2>Ultimate server pack: a diverse mashup.</h2>
+            <p>Warning: Due to the large configuration size (around 1,000 servers in one pack), the app may experience lag. Please add this configuration at your own risk.</p>
+            <button onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshvpn-vpn-list.txt', this)">Copy link</button>
+            <button onclick="showQR('files/ultimate-qr.png')">Show QR-code</button>
+            </div>
+
+        <div class="connect-2">
+            <h2>Test configuration</h2>
+            <p>Please note: the test configuration may not always work.</p>
+            <button onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-2.txt', this)">Copy link</button>
+            <button onclick="showQR('files/test-qr.png')">Show QR-code</button>
+            </div>
+
+        <div class="connect-3">
+            <h2>Russia | Anti-Censorship | Stable on Wi-Fi</h2>
+            <p>Works only in Russia, functions during internet shutdowns, and is optimized for Wi-Fi.</p>
+            <button onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-russia-bypass-jammers.txt', this)">Copy link</button>
+            <button onclick="showQR('files/Rus-STWIFI-qr.png')">Show QR-code</button>
+            </div>
+    </div>
+
+    <div class="servers">
+        <h1>Servers</h1>
+        <div class="servers-grid-container">
+
+            <div class="server-card">
+                <h1>&#x1F1ED;&#x1F1FA;</h1>
+                <h2>Hungary</h2>
+                <p>Ping: ~450 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1F7;</h1>
+                <h2>France</h2>
+                <p>Ping: ~500 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F0;&#x1F1F7;</h1>
+                <h2>South Korea</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F9;&#x1F1F7;</h1>
+                <h2>Turkey</h2>
+                <p>Ping: ~700 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EC;&#x1F1E7;</h1>
+                <h2>United Kingdom</h2>
+                <p>Ping: ~500 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1FA;&#x1F1F8;</h1>
+                <h2>United States</h2>
+                <p>Ping: ~1500 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1E7;&#x1F1EC;</h1>
+                <h2>Bulgaria</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1ED;&#x1F1F0;</h1>
+                <h2>Hong Kong</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F0;&#x1F1FF;</h1>
+                <h2>Kazakhstan</h2>
+                <p>Ping: ~700 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F5;&#x1F1F1;</h1>
+                <h2>Poland</h2>
+                <p>Ping: ~380 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F1;&#x1F1FB;</h1>
+                <h2>Latvia [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1E8;&#x1F1E6;</h1>
+                <h2>Canada</h2>
+                <p>Ping: ~1100 ms</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1EE;</h1>
+                <h2>Finland [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1EE;</h1>
+                <h2>Finland [SNI-RU]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1EE;</h1>
+                <h2>Finland [BL]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1EE;</h1>
+                <h2>Finland [BL] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1DE;&#x1F1E5;</h1>
+                <h2>Germany [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1DE;&#x1F1E5;</h1>
+                <h2>Germany [BL] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1DE;&#x1F1E5;</h1>
+                <h2>Germany [BL]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1ED;&#x1F1FA;</h1>
+                <h2>Hungary [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1ED;&#x1F1FA;</h1>
+                <h2>Hungary [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EE;&#x1F1F3;</h1>
+                <h2>India [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F2;&#x1F1DE;</h1>
+                <h2>Moldova [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F3;&#x1F1F1;</h1>
+                <h2>The Netherlands [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F9;&#x1F1F7;</h1>
+                <h2>Turkey [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F7;&#x1F1FA;</h1>
+                <h2>Russia [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1F7;&#x1F1FA;</h1>
+                <h2>Russia [CIDR] [VK]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1E8;&#x1FF;</h1>
+                <h2>Czechia [CIDR]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1FA;&#x1F1F8;</h1>
+                <h2>United States [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1FA;&#x1F1F8;</h1>
+                <h2>United States [SNI-RU]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EE;&#x1F1EA;</h1>
+                <h2>Estonia [BL]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1F7;</h1>
+                <h2>France [BL] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1F7;</h1>
+                <h2>France [BL]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1E8;&#x1F1ED;</h1>
+                <h2>Anycast-IP (Switzerland) [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EC;&#x1F1E7;</h1>
+                <h2>Anycast-IP (United Kingdom) [CIDR] [YA]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EB;&#x1F1F7;</h1>
+                <h2>Anycast-IP (France) [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+            <div class="server-card">
+                <h1>&#x1F1EE;&#x1F1F3;</h1>
+                <h2>Anycast-IP (India) [CIDR] [OPENRAY]</h2>
+                <p>Ping: N/A</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>2026, freshVPN.</p>
+        <p>&#x2764; by <a href="https://github.com/1freshfork/">@freshfork</a></p>
+    </div>
+
+    <div id="qrModal" class="qr-modal" onclick="closeModal()">
+        <div class="qr-modal-content" onclick="event.stopPropagation()">
+            <button class="qr-modal-close" onclick="closeModal()">&times;</button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 8px;">Scan QR-Code</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Import config directly to happ</p>
+            <img id="qrImage" src="" alt="QR Code">
+        </div>
+    </div>
+
+    <script>
+        // Функция копирования ссылок
+        function copyLink(url, buttonElement) {
+            navigator.clipboard.writeText(url).then(() => {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = 'Copied!';
+                buttonElement.style.borderColor = 'var(--accent)';
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Could not copy link: ', err);
+            });
+        }
+
+        // Логика модального окна
+        const modal = document.getElementById('qrModal');
+        const qrImg = document.getElementById('qrImage');
+
+        function showQR(imagePath) {
+            qrImg.src = imagePath;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Подсветка задержки (Ping) в зависимости от значений
+        document.querySelectorAll('.server-card p').forEach(p => {
+            const text = p.innerText;
+            if (text.includes('N/A')) {
+                // Оставляем дефолтный цвет мутед
+            } else {
+                const ms = parseInt(text.replace(/[^0-9]/g, ''), 10);
+                if (ms < 400) {
+                    p.classList.add('ping-good');
+                } else if (ms <= 700) {
+                    p.classList.add('ping-medium');
+                } else {
+                    p.classList.add('ping-bad');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
