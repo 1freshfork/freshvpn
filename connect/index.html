@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshVPN - Connection Hub</title>
+     <link rel="icon" type="image/png" href="../files/logo.png">
+    <style>
+        /* === ПЕРЕМЕННЫЕ И КАСТОМНАЯ ПАЛИТРА === */
+        :root {
+            --bg-dark: #080b10;
+            --bg-card: #111622;
+            --bg-card-hover: #171e2e;
+            --accent: #00ff88; /* Fresh Mint */
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --text-main: #f0f5ff;
+            --text-muted: #8595ae;
+            --border-color: #1e293b;
+            --border-hover: #334155;
+            --font-tech: 'Courier New', Courier, monospace;
+        }
+
+        /* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* === НАВИГАЦИЯ (NAVBAR) === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(8, 11, 16, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .navbar .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .navbar .links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .navbar .links a:empty {
+            display: none;
+        }
+
+        /* === ХЕДЕР СТРАНИЦЫ === */
+        .connect-header {
+            max-width: 1200px;
+            margin: 40px auto 20px auto;
+            padding: 0 20px;
+        }
+
+        .connect-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .connect-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* === ИНСТРУКЦИЯ ПО НАСТРОЙКЕ === */
+        .setup-guide {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .guide-wrapper {
+            background: linear-gradient(135deg, rgba(17,22,34,0.6), rgba(9,12,20,0.8));
+            border: 1px dashed var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .guide-step {
+            position: relative;
+        }
+
+        .guide-step::before {
+            content: attr(data-step);
+            font-family: var(--font-tech);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: rgba(0, 255, 136, 0.08);
+            position: absolute;
+            top: -10px;
+            left: 0;
+            line-height: 1;
+        }
+
+        .guide-step h3 {
+            font-size: 1.15rem;
+            color: #fff;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            padding-top: 10px;
+        }
+
+        .guide-step p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* === КАРТОЧКИ ПОДКЛЮЧЕНИЯ === */
+        .connect-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .connect-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .connect-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-top-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .connect-card h2 {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .status-badge {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-multi { background: rgba(0, 255, 136, 0.1); color: var(--accent); border: 1px solid rgba(0, 255, 136, 0.2); }
+        .badge-test { background: rgba(255, 183, 77, 0.1); color: #ffb74d; border: 1px solid rgba(255, 183, 77, 0.2); }
+        .badge-spec { background: rgba(88, 166, 255, 0.1); color: #58a6ff; border: 1px solid rgba(88, 166, 255, 0.2); }
+
+        .connect-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            max-width: 850px;
+        }
+
+        /* Кастомный блок предупреждения для тяжелой сборки */
+        .warning-box {
+            background: rgba(255, 107, 107, 0.05);
+            border-left: 4px solid #ff6b6b;
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 24px;
+        }
+        .warning-box p {
+            color: #ff8b8b;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Кнопки действий */
+        .action-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.02);
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #fff;
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО ДЛЯ QR КОДОВ === */
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 7, 10, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+        }
+
+        .qr-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .qr-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-hover);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .qr-modal.active .qr-modal-content {
+            transform: scale(1);
+        }
+
+        .qr-modal-content img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 12px;
+            margin: 16px 0;
+            background: white;
+            padding: 10px;
+        }
+
+        .qr-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .qr-modal-close:hover {
+            color: #fff;
+        }
+
+        /* === ФУТЕР === */
+        .footer {
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 40px 20px 0 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 768px) {
+            .card-top-info { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .action-group { width: 100%; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <h1>FreshVPN</h1>
+        </div>
+        <div class="links">
+            <a href="../">Home</a>
+            <a href="../servers/">Servers</a>
+            <a href="../about/">About</a>
+            <a href="../connect/">Connect</a>
+        </div>
+    </div>
+
+    <div class="connect-header">
+        <h1>Add configuration on happ</h1>
+        <p>Choose your optimal deployment layout. Copy raw subscription asset vectors or initialize via terminal matrix codes.</p>
+    </div>
+
+    <!-- Быстрый минималистичный гайд по установке -->
+    <div class="setup-guide">
+        <div class="guide-wrapper">
+            <div class="guide-step" data-step="01">
+                <h3>Copy or Scan</h3>
+                <p>Select any node configuration profile below. Click "Copy link" or generate an instant QR asset.</p>
+            </div>
+            <div class="guide-step" data-step="02">
+                <h3>Initialize happ</h3>
+                <p>Launch your client dashboard application, navigate to subscription streams or config profiles setup.</p>
+            </div>
+            <div class="guide-step" data-step="03">
+                <h3>Sync Stream</h3>
+                <p>Paste the text link vector or scan with mobile camera sensor to inject live nodes into client memory.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="connect-container">
+
+        <!-- Конфигурация 1 -->
+        <div class="connect-card">
+            <div class="card-top-info">
+                <h2>Ultimate server pack: a diverse mashup.</h2>
+                <span class="status-badge badge-multi">~1,000 Nodes</span>
+            </div>
+            
+            <div class="warning-box">
+                <p>Warning: Due to the large configuration size (around 1,000 servers in one pack), the app may experience lag. Please add this configuration at your own risk.</p>
+            </div>
+
+            <div class="action-group">
+                <button class="btn-primary" onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshvpn-vpn-list.txt', this)">Copy link</button>
+                <!-- будет копировать ссылку https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshvpn-vpn-list.txt -->
+                
+                <button class="btn-secondary" onclick="showQR('../files/ultimate-qr.png')">Show QR-code</button>
+                <!-- будет показывать в модальном окне (файл из files/, название файла - ultimate-qr.png) -->
+            </div>
+        </div>
+
+        <!-- Конфигурация 2 -->
+        <div class="connect-card">
+            <div class="card-top-info">
+                <h2>Test configuration</h2>
+                <span class="status-badge badge-test">BETA CLUSTER</span>
+            </div>
+            
+            <p>Please note: the test configuration may not always work.</p>
+
+            <div class="action-group">
+                <button class="btn-primary" onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-2.txt', this)">Copy link</button>
+                <!-- будет копировать ссылку https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-2.txt -->
+                
+                <button class="btn-secondary" onclick="showQR('../files/test-qr.png')">Show QR-code</button>
+                <!-- будет показывать в модальном окне (файл из files/, название файла - test-qr.png) -->
+            </div>
+        </div>
+
+        <!-- Конфигурация 3 -->
+        <div class="connect-card">
+            <div class="card-top-info">
+                <h2>Russia | Anti-Censorship | Stable on Wi-Fi</h2>
+                <span class="status-badge badge-spec">OPTIMIZED OPTION</span>
+            </div>
+            
+            <p>Works only in Russia, functions during internet shutdowns, and is optimized for Wi-Fi.</p>
+
+            <div class="action-group">
+                <button class="btn-primary" onclick="copyLink('https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-russia-bypass-jammers.txt', this)">Copy link</button>
+                <!-- будет копировать ссылку https://raw.githubusercontent.com/1freshfork/freshvpn/refs/heads/main/freshfork-vpn-russia-bypass-jammers.txt -->
+                
+                <button class="btn-secondary" onclick="showQR('../files/Rus-STWIFI-qr.png')">Show QR-code</button>
+                <!-- будет показывать в модальном окне (файл из files/, название файла - Rus-STWIFI-qr.png) -->
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>2026, freshVPN.</p>
+        <p>&#x2764; by <a href="https://github.com/1freshfork/">@freshfork</a></p>
+    </div>
+
+    <!-- ИНТЕГРИРОВАННОЕ МОДАЛЬНОЕ ОКНО ДЛЯ QR -->
+    <div id="qrModal" class="qr-modal" onclick="closeModal()">
+        <div class="qr-modal-content" onclick="event.stopPropagation()">
+            <button class="qr-modal-close" onclick="closeModal()">&times;</button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 8px; color: #fff;">Scan QR-Code</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Import selected stream vector instantly</p>
+            <img id="qrImage" src="" alt="QR Code">
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ ВЗАИМОДЕЙСТВИЯ -->
+    <script>
+        // Копирование путей в буфер обмена
+        function copyLink(url, buttonElement) {
+            navigator.clipboard.writeText(url).then(() => {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = 'Copied!';
+                buttonElement.style.color = '#fff';
+                buttonElement.style.background = 'var(--accent)';
+                buttonElement.style.borderColor = 'var(--accent)';
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.style.color = '';
+                    buttonElement.style.background = '';
+                    buttonElement.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Buffer routing execution failed: ', err);
+            });
+        }
+
+        // Модальный рендеринг матриц QR
+        const modal = document.getElementById('qrModal');
+        const qrImg = document.getElementById('qrImage');
+
+        function showQR(imagePath) {
+            qrImg.src = imagePath;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
