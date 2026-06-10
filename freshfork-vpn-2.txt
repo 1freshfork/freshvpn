@@ -1,16 +1,21 @@
-# profile-title: freshVPN #2
+# profile-title: Ultimate VLESS Reality | by Qwen + WhiteLists
 # profile-update-interval: 1
-# Date/Time: 2026-06-10 / 15:30 (Moscow)
-# Количество: 6
+# Date/Time: 2026-06-10 / 18:30 (Moscow)
+# Количество: 12
 
-# --- 🎮 СЕРВЕРЫ ДЛЯ ROBLOX (Reality + XTLS-Vision для поддержки UDP) ---
-vless://44b3ee72-cffb-4d66-ab7c-3138b9bdeeef@54.36.162.217:443?security=reality&alpn=h2&encryption=none&pbk=upTVUrc_t7xF1ULni8pHRDhRES1sT4BDm1r8rugTzyQ&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=speedtest.net&sid=ff815f58c7e77aa9#🇫🇷Roblox-FR-UDP
-vless://347a56c2-a453-4b32-86cd-7522943df88c@103.119.19.201:2087?security=reality&encryption=none&pbk=vZuBWF0YzlKI0fJWxU6hmOLHHQ5Qb1kf35HbZDcFCH4&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=api-maps.yandex.ru&sid=493c3d4e37c23c28#🇳🇱Roblox-NL-UDP
+# --- 🎮 СЕРВЕРЫ ДЛЯ ROBLOX (Reality + gRPC/Vision для поддержки UDP и низкого пинга) ---
+vless://7fe363a0-c6e2-4609-9301-7a7d92ddb780@de.riotvpn.eu:8443?mode=multi&security=reality&encryption=none&pbk=sgFFdQvfeujBKh6g7N7klU_u0mKYlr800MFbko5FzUg&fp=chrome&type=grpc&serviceName=grpc-yandex&sni=ads.x5.ru&sid=e67fb918ed6b9ffb#🇩🇪Roblox-DE-gRPC
+vless://443211c6-8ebb-4676-b796-f3a3a94c38a6@37.9.4.147:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=firefox&sni=www.vk.com&pbk=fLBaSnICDNyn0zZ-YqzdnoE9ZrlXZ7F7bXH46WkuGEI&sid=a2668873387ce099#🇱🇹Roblox-LT-Vision
+vless://721aa507-ae25-47c0-817d-d4e2d321698e@178.154.204.65:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=qq&sni=wl-4-4.nodes.ac&pbk=FVceIo73-WJfacwis9bRlQ7wEYbQuN4N25oWQlmdwl0&sid=bfb16f73e35be2da#🇩🇪Roblox-DE-H2nexus
 
-# --- 🤖 СЕРВЕРЫ ДЛЯ GEMINI (Чистые IP / Reality) ---
-vless://3559f1f7-7d70-46c9-82db-d2b46269300b@s2.dipvpn.ru:443?security=reality&encryption=none&pbk=1BdgrQ_esOEya01sDCBYK4MGpJgaUhssHQG-aWJkyFQ&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=dipvpn.ru#🇫🇮Gemini-FI
-vless://37253a6a-2a9b-42bb-992c-b5f1b1ef1791@185.221.199.37:443?security=reality&encryption=none&pbk=3WzSgL8uXA3vE3IHrfdBpJmOO4MYrsWpczDSY_jJRjI&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=vruaz.mostserv.xyz&sid=226509f017e4c36d#🇩🇪Gemini-DE
+# --- 🤖 СЕРВЕРЫ ДЛЯ GEMINI (Чистые Reality IP, обход банов Google) ---
+vless://3b7950ed-e076-4a51-8df2-222a88689700@ch-gt-01.com:8443?type=tcp&headerType=none&security=reality&encryption=none&sni=storage.yandex.net&fp=firefox&pbk=8qHRGcCezzSu4S-Cz9l19BNRLWm4MkaSwZV3dNrLEwc&sid=d037f6f67cc90016&flow=xtls-rprx-vision#🇨🇭Gemini-CH-Vision
+vless://9f76a069-65f3-4810-8a9e-3eaeea36225d@51.250.104.246:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=safari&sni=cdp.x5.ru&pbk=wgXD4k3A16WR0aL63N9Mx8xoqFigJLyQWJXi-l3MPXI&sid=8ec792bfd725be8a#🇩🇪Gemini-DE-netcup
+vless://66366262-3fd8-449b-964c-b9f6718629c7@84.201.131.127:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=firefox&sni=ads.x5.ru&pbk=73LOtZvtJoUx42LIIHdr6GTrzZkA_5RJy_olEG2qQXQ&sid=e11822a0958dd1a3&spx=%2F#🇱🇹Gemini-LT-X5
 
-# --- 🌐 ОБЫЧНЫЕ СЕРВЕРЫ (Для Telegram, YouTube и остального) ---
-vless://37c8b06a-25cf-42d7-b2ea-31d3c8561998@cncdn.cc:80?path=/14708/31d3c8561998/&security=none&encryption=none&host=imap.mmadcoffee.info&type=ws#🇸🇬Regular-SG
-vless://0058c215-ab1e-400c-a403-b5b2fda7e846@199.232.197.131:80?encryption=none&type=ws&path=/&host=max-gb1.global.ssl.fastly.net#🇺🇸Regular-US
+# --- 🌐 ОБЫЧНЫЕ СЕРВЕРЫ (Telegram, YouTube, сайты - из WhiteList и публичных источников) ---
+vless://90c60604-b214-4fe6-8396-9320674cfd68@178.20.211.244:443?type=xhttp&headerType=none&security=reality&encryption=none&sni=5post-gate.x5.ru&fp=qq&pbk=akcAXaW7GNwXT6bTrtD6oZIY9rdEzW4TfZvYqDRzsTc&sid=a8f3c1d7e9b4c2f6&spx=%2F&path=%2Fxhttp-proxy#🇸🇪Regular-SE-XHTTP
+vless://243d0037-5892-4abd-8917-49b6940aff18@51.250.24.232:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=safari&sni=cdp.x5.ru&pbk=wgXD4k3A16WR0aL63N9Mx8xoqFigJLyQWJXi-l3MPXI&sid=8ec792bfd725be8a#🇩🇪Regular-DE-#73
+vless://87a80f4b-75a7-4bfd-8c42-042772eceda7@51.250.70.186:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=random&sni=yandex.ru&pbk=Ec54Eop0jZft7rcJsPN4RHc4xG9smXhtenM52pJFUQI&sid=27e53bbcab7593d7&spx=%2F#🇩🇪Regular-DE-#83
+vless://9cf8a6d3-3362-474a-82ca-acf2f07f7cac@158.160.32.64:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=qq&sni=m.vk.com&pbk=oqRus6Z_Q1jqJaTEPu7ENbRL0-XKOw54K0jwCCGLtEk&sid=a9c4f17e3b62d8#🇸🇪Regular-SE-#300
+vless://6caa8c9b-7eea-4e86-9fc8-0bd905a5a3cc@212.233.121.169:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=firefox&sni=yandex.ru&pbk=PL09r78ubjFaOILv5x6HPsCZeTdwhlRb3tuDY5vASwQ#🇫🇮Regular-FI-#91
