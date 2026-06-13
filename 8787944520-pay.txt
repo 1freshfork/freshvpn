@@ -1,9 +1,7 @@
 # profile-title: Обход глушилок | by freshfork
-# profile-desc: VPN by freshfork (Германия, США, Нидерланды)
+# profile-desc: VPN by freshfork
 # profile-icon: 🛡️
 # profile-update-interval: 1
-
-https://sub.pfvpn.cfd/free/sub
 
 
 vless://a0ad9541-74ce-4d58-b0cc-28ef26a687dc@sweden.zestful.bond:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&sni=sweden.zestful.bond&fp=firefox&pbk=KS0F6q2PTY1s6y2sH5PdrznYqprIkUBtS1masvcrJjo&sid=823257b7b9ab9d02#🇸🇪 Швеция - новая
