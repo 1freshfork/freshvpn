@@ -1,3 +1,8 @@
+# profile-title: freshVPN
+# profile-update-interval: 1
+# Date/Time: 2026-06-04 / 00:10 (Moscow)
+# Количество: 1000
+
 vless://e87b361c-d540-4086-bebe-7df5bd6bcebc@217.16.31.218:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=max.ru&pbk=SHIYN7zN9aFVxwKK-bIvDbhUgtHvlBhDi1qSl2sWwRw&sid=fb916778d4#🇷🇺 #1 Россия | ГЛУШИЛКИ
 vless://e87b361c-d540-4086-bebe-7df5bd6bcebc@89.208.198.161:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=max.ru&pbk=SHIYN7zN9aFVxwKK-bIvDbhUgtHvlBhDi1qSl2sWwRw&sid=fb916778d4#🇷🇺 #2 Россия | ГЛУШИЛКИ
 vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?security=none#⬇️
