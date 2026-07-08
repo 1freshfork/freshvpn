@@ -1,6 +1,6 @@
 # profile-title: @fresh1VPN
 profile-update-interval: 1
-Date/Time: 2026-07-08 / 13:23 (Moscow)
+Date/Time: 2026-07-08 / 14:24 (Moscow)
 Количество: 25
 vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%40fresh1VPN%20%7C%20%D0%9F%D0%BB%D0%B0%D1%82%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D0%BA%D0%B0
 vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%40fresh1VPN%20%7C%20%D0%98%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B0%D0%B5%D1%82%D1%81%D1%8F%3F
